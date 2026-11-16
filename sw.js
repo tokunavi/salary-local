@@ -1,7 +1,7 @@
 /* Service Worker のひな形。scripts/local-build.mjs が、下の VERSION と PRECACHE の印を埋めて dist-local/sw.js を作る。
    目的：一度開いたあとは、オフライン（機内モード）でも起動できるようにする。
    🔴 保存するのは、このサイト自身のファイルだけ。入力データ（IndexedDB）には触れない。 */
-const VERSION = "9d2bea61d1";
+const VERSION = "916e6d5ff0";
 const CACHE = "salary-local-" + VERSION;
 const PRECACHE = [
   "./",
@@ -31,7 +31,15 @@ self.addEventListener("activate", (event) => {
       .keys()
       .then((keys) => Promise.all(keys.filter((k) => k.startsWith("salary-local-") && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
+      // 開いている画面に「いま有効な版」を知らせる（画面は、自分の版と違えば更新を促す。app-local-autoupdate.md §3-2）。
+      .then(() => self.clients.matchAll({ type: "window" }))
+      .then((clients) => clients.forEach((c) => c.postMessage({ type: "build", build: VERSION })))
   );
+});
+
+// 画面から「版は？」と聞かれたら、自分の版を返す（長く開いたままの画面・戻ってきた画面が、新しい版の有無を確かめるため）。
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "which" && event.source) event.source.postMessage({ type: "build", build: VERSION });
 });
 
 self.addEventListener("fetch", (event) => {
