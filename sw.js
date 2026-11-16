@@ -1,8 +1,13 @@
 /* Service Worker のひな形。scripts/local-build.mjs が、下の VERSION と PRECACHE の印を埋めて dist-local/sw.js を作る。
    目的：一度開いたあとは、オフライン（機内モード）でも起動できるようにする。
    🔴 保存するのは、このサイト自身のファイルだけ。入力データ（IndexedDB）には触れない。 */
-const VERSION = "1a7c981786";
-const CACHE = "salary-local-" + VERSION;
+const VERSION = "8619f609b5";
+// 変種を問わない「入力のハッシュ」。本番の公開は、テスト版に載っているものと同じソースのときだけ許す（scripts/local-publish.mjs・app-local-staging.md §3-2）。
+const SOURCE = "8619f609b5";
+// 控えの名前の接頭辞（変種ごと）。🔴 本番は salary-local-、テスト版は salary-beta-。本番の Service Worker は「salary-local- で始まる控えのうち自分の版以外」を
+// 消すので、テスト版の接頭辞は salary-local- で始まってはいけない（同じドメインの別フォルダに置くため。scripts/local-variant.mjs）。
+const CACHE_PREFIX = "salary-local-";
+const CACHE = CACHE_PREFIX + VERSION;
 const PRECACHE = [
   "./",
   "./app.css",
@@ -29,7 +34,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("salary-local-") && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(CACHE_PREFIX) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
       // 開いている画面に「いま有効な版」を知らせる（画面は、自分の版と違えば更新を促す。app-local-autoupdate.md §3-2）。
       .then(() => self.clients.matchAll({ type: "window" }))
