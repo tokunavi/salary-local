@@ -1,7 +1,7 @@
 /* Service Worker のひな形。scripts/local-build.mjs が、下の VERSION と PRECACHE の印を埋めて dist-local/sw.js を作る。
    目的：一度開いたあとは、オフライン（機内モード）でも起動できるようにする。
    🔴 保存するのは、このサイト自身のファイルだけ。入力データ（IndexedDB）には触れない。 */
-const VERSION = "e2785232c6";
+const VERSION = "9d2bea61d1";
 const CACHE = "salary-local-" + VERSION;
 const PRECACHE = [
   "./",
