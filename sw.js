@@ -1,9 +1,9 @@
 /* Service Worker のひな形。scripts/local-build.mjs が、下の VERSION と PRECACHE の印を埋めて dist-local/sw.js を作る。
    目的：一度開いたあとは、オフライン（機内モード）でも起動できるようにする。
    🔴 保存するのは、このサイト自身のファイルだけ。入力データ（IndexedDB）には触れない。 */
-const VERSION = "8619f609b5";
+const VERSION = "ffceece333";
 // 変種を問わない「入力のハッシュ」。本番の公開は、テスト版に載っているものと同じソースのときだけ許す（scripts/local-publish.mjs・app-local-staging.md §3-2）。
-const SOURCE = "8619f609b5";
+const SOURCE = "ffceece333";
 // 控えの名前の接頭辞（変種ごと）。🔴 本番は salary-local-、テスト版は salary-beta-。本番の Service Worker は「salary-local- で始まる控えのうち自分の版以外」を
 // 消すので、テスト版の接頭辞は salary-local- で始まってはいけない（同じドメインの別フォルダに置くため。scripts/local-variant.mjs）。
 const CACHE_PREFIX = "salary-local-";
